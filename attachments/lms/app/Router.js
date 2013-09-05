@@ -2,7 +2,7 @@ $(function() {
   App.Router = new (Backbone.Router.extend({
 
     routes: {
-      ''                            : 'Groups', 
+      ''                            : 'Resources', 
     //  ''                            : 'FacilityDashboard', 
     //  'dashboard'                   : 'FacilityDashboard', 
       'resources'                   : 'Resources',

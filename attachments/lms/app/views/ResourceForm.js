@@ -37,10 +37,16 @@ $(function() {
           that.model.saveAttachment("form#fileAttachment", "form#fileAttachment #_attachments", "form#fileAttachment .rev" )
         }
         else {
-          that.model.trigger('processed')
+          // We're done! But delay the trigger because slow servers (like iris couch) need time to recalculate views
+          setTimeout(function() {
+            that.model.trigger('processed')
+          }, 3000)
         }
         that.model.on('savedAttachment', function() {
-          this.trigger('processed')
+          // We're done! But delay the trigger because slow servers (like iris couch) need time to recalculate views
+          setTimeout(function() {
+            that.model.trigger('processed')
+          }, 3000)
         }, that.model)
       }})
     },
