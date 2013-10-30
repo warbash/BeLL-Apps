@@ -1,3 +1,5 @@
+// @todo refactor this to use the maps in the maps directory
+
 // http://nodejs.org/api.html#_child_processes
 // var $ = require('jquery')
 var _ = require('underscore')

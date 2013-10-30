@@ -1,42 +1,40 @@
 var _ = require('underscore')
+var Backbone = require('backbone')
 var request = require('request')
 var sys = require('sys')
 var exec = require('child_process').exec;
 function puts(error, stdout, stderr) { sys.puts(stdout) }
 
+ // @todo refactor everything to use the network maps in the maps directory
+
 // Increase the ulimit so the entire directory of attachments can be uploaded
 exec('launchctl limit maxfiles 4056 4056', puts)
 exec('ulimit -n 4056')
 
-var couchUrl = 'http://zone.local:5984' 
-
-var databases = [
-  'apps',
-	'assignments', 
-	'feedback', 
-	'groups', 
-	'members', 
-	'actions',
-	'resources', 
-	'facilities',
-  'devices'
-]
-
-
+/*
+ * Install the databases
+ */
 _.each(databases, function(database) {
-  // Install databases
   // @todo These might not complete before other requests happen...
   request.put(couchUrl + '/' + database)
   // Install views in corresponding databases
   exec('couchapp push views/' + database + '.js ' + couchUrl + '/' + database, puts);
 })
 
-// Push the Apps up to CouchDB
+/*
+ * Push the Apps up to CouchDB
+ */
 exec('couchapp push app.js ' + couchUrl + '/apps', puts);
 
-// Create the "all" device for when devices want to get an App Cache file with all Resources
+/*
+ * Create defaults
+ */
 exec('curl -XPUT ' + couchUrl + '/devices/_design/all -d "{}"', puts);
 exec('curl -XPUT ' + couchUrl + '/members/ce82280dc54a3e4beffd2d1efa00c4e6 -d \'{"login":"admin","kind":"Member", "roles": ["admin"], "firstName": "Default", "lastName": "Admin", "pass":"password"}\'') 
+
+/*
+ * Create the replicator docs
+ */
 
 
 var replicatorInstaller = {
@@ -83,7 +81,7 @@ var replicatorInstaller = {
   }
 }
 
-replicatorInstaller.location = 'http://pi:raspberry@zone.local:5984/_replicator'
+replicatorInstaller.location = 'http://pi:raspberry@messenger.local:5984/_replicator'
 replicatorInstaller.directions = [
   {
     label: 'zone-mirror',
@@ -107,31 +105,31 @@ replicatorInstaller.directions = [
       // 'members', 
       // 'actions',
       'resources', 
-      // 'facilities',
+      'facilities',
       // 'devices'
     ]
   },
   { 
-    label: 'messenger', 
-    server: 'http://pi:raspberry@messenger.local:5984', 
+    label: 'zone', 
+    server: 'http://pi:raspberry@zone.local:5984', 
     push: [
+      // 'apps',
+      'assignments', 
+      'feedback', 
+      'groups', 
+      'members', 
+      'actions',
+      'resources', 
+      'facilities',
+      // 'devices'
+    ],
+    pull: [
       'apps',
       // 'assignments', 
       'feedback', 
       // 'groups', 
       // 'members', 
       // 'actions',
-      'resources', 
-      // 'facilities',
-      // 'devices'
-    ],
-    pull: [
-      'apps',
-      'assignments', 
-      'feedback', 
-      'groups', 
-      'members', 
-      'actions',
       'resources', 
       'facilities',
       // 'devices'
