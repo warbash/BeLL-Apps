@@ -1,3 +1,7 @@
+
+ // @todo refactor everything to use the network maps in the maps directory.
+ // @todo refactor exec to use exec-sync to make sure these commands run synchronously as to avoid race conditions.
+
 var _ = require('underscore')
 var Backbone = require('backbone')
 var request = require('request')
@@ -5,7 +9,7 @@ var sys = require('sys')
 var exec = require('child_process').exec;
 function puts(error, stdout, stderr) { sys.puts(stdout) }
 
- // @todo refactor everything to use the network maps in the maps directory
+
 
 // Increase the ulimit so the entire directory of attachments can be uploaded
 exec('launchctl limit maxfiles 4056 4056', puts)
