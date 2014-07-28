@@ -2415,7 +2415,7 @@ CompileAppManifest:function(){
     apps.once('sync', function() {
           _.each(apps.models, function(app) {
             _.each(app.get('_attachments'), function(value, key, list) {
-              replace += encodeURI('/apps/' + app.id + '/' + key) + '\n'
+              if (key !== "manifest.appcache") replace += encodeURI('/apps/' + app.id + '/' + key) + '\n'
             })
           })
           App.trigger('compile:appsListReady')
