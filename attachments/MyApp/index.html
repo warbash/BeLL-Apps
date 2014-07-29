@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html manifest="../manifest.appcache" lang="en">
 <head>
-  <meta charset="utf-8"  manifest="/cache.manifest">
   <title>Bell MyApp</title>
 <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen" />
   <link href="vendor/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen" />
@@ -1249,20 +1248,11 @@
         <th>Average Rating</th>
         <th >Times Rated</th>
      </tr>
+     <!-- @todo Recording of opening resources is broken.
      <tr>
          <th colspan="6">Most Frequently Opened</th>
      </tr>
-     <!-- dynamically display each most frequently opened resource entry & its corresponding stats -->
-     <% _.each(Most_Freq_Open, function(resource){ %>
-         <tr>
-             <td><%=resource.resourceName%></td>
-             <td><%=resource.timesOpenedCumulative%></td>
-             <td><%=resource.timesOpenedByMales%></td>
-             <td><%=resource.timesOpenedByFemales%></td>
-             <td><%=resource.avgRatingCumulative%></td>
-             <td><%=resource.timesRatedCumulative%></td>
-         </tr>
-     <% }); %>
+     -->
      <tr>
         <th colspan="6">Highest Rated</th>
      </tr>
