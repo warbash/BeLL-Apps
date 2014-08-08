@@ -2320,16 +2320,21 @@ var test=new App.Models.CourseInvitation()
 					selectedList: 1
 				 });
 		}*/
+//         $.datepicker.setDefaults({
+//             dateFormat: 'mm-dd-yy'
+//         });
 		$('#start-date').datepicker({
+               dateFormat: "yy-mm-dd",
                todayHighlight: true
             });
         $('#end-date').datepicker({
+               dateFormat: "yy-mm-dd",
                todayHighlight: true
             });
  }, 
  changeDateFormat:function(date)
  {
- var datePart = date.match(/\d+/g),month = datePart[0], day = datePart[1], year = datePart[2];
+ var datePart = date.match(/\d+/g), year = datePart[0], month = datePart[1], day = datePart[2];
   return year+'/'+month+'/'+day;
  },
  deletePouchDB:function(){
