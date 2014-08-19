@@ -158,6 +158,8 @@
   <script src='app/collections/ActivityLog.js'></script>
 
    <!-- app-Views -->
+  <script src="app/views/ConfigurationView.js"></script>
+  <script src="app/views/listSyncDbView.js"></script>
   <script src="app/views/MemberLoginForm.js"></script>
   <script src="app/views/navBarView.js"></script>
   <script src="app/views/MemberForm.js"></script>
@@ -250,8 +252,19 @@
   <!-- javaScript -->
   
   <script src='indexFile.js'></script>
-  
-  
+
+  <!-- template for configurations, used by configuration view -->
+  <script type="text/template" id="template-Configuration">
+      <h5>&nbsp;&nbsp;Set Community Language </h5>
+      &nbsp;&nbsp;<select id="languageSelection">
+          <option value="" selected><%= currentLanguage %></option>
+          <option value="">----------------</option>
+          <% for (var i=0; i<availableLanguages.length; i++){%>
+          <option value="<%= availableLanguages[i] %>"><%= availableLanguages[i] %> </option>
+          <% } %>
+      </select>
+
+  </script>
 
   <script type='text/template' id='template-app'>
  	 <div id="emailCompose" class="well" style="display: none;">
@@ -1248,20 +1261,31 @@
         <th>Average Rating</th>
         <th >Times Rated</th>
      </tr>
-     <!-- @todo Recording of opening resources is broken.
+     <!-- @todo Recording of opening resources is broken.  -->
      <tr>
          <th colspan="6">Most Frequently Opened</th>
      </tr>
-     -->
+
+     <!-- dynamically display each most frequently opened resource entry & its corresponding stats -->
+     <% _.each(Most_Freq_Open, function(resource){ %>
+     <tr>
+         <td><%=resource.resourceName%></td>
+         <td><%=resource.timesOpenedCumulative%></td>
+         <td><%=resource.timesOpenedByMales%></td>
+         <td><%=resource.timesOpenedByFemales%></td>
+         <td><%=resource.avgRatingCumulative%></td>
+         <td><%=resource.timesRatedCumulative%></td>
+     </tr>
+     <% }); %>
      <tr>
         <th colspan="6">Highest Rated</th>
      </tr>
      <% _.each(Highest_Rated, function(resource){ %>
          <tr>
              <td><%=resource.resourceName%></td>
-             <td><%=resource.timesOpenedCumulative%></td>
-             <td><%=resource.timesOpenedByMales%></td>
-             <td><%=resource.timesOpenedByFemales%></td>
+             <td><%=resource.timesRatedByCumulative%></td>
+             <td><%=resource.timesRatedByMales%></td>
+             <td><%=resource.timesRatedByFemales%></td>
              <td><%=resource.avgRatingCumulative%></td>
              <td><%=resource.timesRatedCumulative%></td>
          </tr>
@@ -1272,9 +1296,9 @@
      <% _.each(Lowest_Rated, function(resource){ %>
          <tr>
              <td><%=resource.resourceName%></td>
-             <td><%=resource.timesOpenedCumulative%></td>
-             <td><%=resource.timesOpenedByMales%></td>
-             <td><%=resource.timesOpenedByFemales%></td>
+             <td><%=resource.timesRatedByCumulative%></td>  <!-- timesOpenedCumulative -->
+             <td><%=resource.timesRatedByMales%></td>     <!-- timesOpenedByMales -->
+             <td><%=resource.timesRatedByFemales%></td>   <!-- timesOpenedByFemales -->
              <td><%=resource.avgRatingCumulative%></td>
              <% if (resource.timesRatedCumulative === "N/A") { %>
                 <td><%=resource.timesRatedCumulative%></td>
