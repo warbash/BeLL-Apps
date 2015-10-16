@@ -524,7 +524,7 @@ $(function () {
 });$(function () {
 
     App.Views.Configurations = Backbone.View.extend({
-    
+
         initialize: function () {
             this.$el.html('<h3>Set Configurations<h3>')
         },
@@ -539,6 +539,22 @@ $(function () {
 
             this.$el.append(this.form.render().el);
             this.$el.append('<a style="margin-left:31px;" class="btn btn-success" id="formButton">Submit Configurations </a>');
+
+
+        },
+        updateDropDownValue : function(){
+            //alert($('.field-selectLanguage').find('.bbf-editor').find('select').val());
+            var configurations = Backbone.Collection.extend({
+                url: App.Server + '/configurations/_all_docs?include_docs=true'
+            })
+            var config = new configurations()
+            config.fetch({
+                async: false
+            })
+            var con = config.first();
+            var currentConfig = config.first().toJSON().rows[0].doc;
+            var clanguage= currentConfig.currentLanguage;
+            $('.field-selectLanguage').find('.bbf-editor').find('select').val(clanguage);
         },
         setForm:function(){
             this.form.commit();
@@ -557,6 +573,7 @@ $(function () {
             con.set('notes',Config.get('notes'));
             con.set('region', Config.get('region'));
             con.set('version', Config.get('version'));
+            con.set('subType', 'dummyy');
             if(Config.get('selectLanguage') != "Select an Option") {
                 con.set('currentLanguage', Config.get('selectLanguage'));
             }
@@ -1739,7 +1756,30 @@ $(function () {
                 if (typeofBell == 'nation') {
                     roles = roles + '<a href="../nation/index.html#dashboard">Manager</a>'
                 } else {
-                    roles = roles + '<a href="#communityManage">Manager</a>'
+                    var config = new App.Collections.Configurations()
+                    config.fetch({
+                        async: false
+                    })
+                    var con = config.first()
+                    App.configuration = con
+                    var branch = App.configuration.get('subType')
+                    if(branch=="branch")
+                    {
+                        roles = roles + '<a href="#" style="display: none">Manager</a>'
+                        con.set('nationName','random');
+                        con.set('nationUrl','random');
+                        con.save(null,{ success: function(doc,rev){
+
+                            App.configuration = con;
+                            alert('Configurations are Successfully changed for Branch Library');
+                            console.log('Configurations are Successfully changed for Branch Library');
+                            Backbone.history.navigate('dashboard', {trigger: true});
+                        }});
+                    }
+                    else{
+                        roles = roles + '<a href="#communityManage">Manager</a>'
+                    }
+                   // roles = roles + '<a href="#communityManage">Manager</a>'
                 }
             }
             $('.visits').html(temp)
@@ -3739,7 +3779,6 @@ $(function () {
             }, 1000);
         },
         deleteCollectionNameFromResources: function(idOfCollection) {
-
             $.ajax({
                 url: '/resources/_design/bell/_view/resourceOnTag?_include_docs=true&key="' + idOfCollection + '"',
 
@@ -3764,8 +3803,10 @@ $(function () {
                         "docs": tempResult
                     }, {
                         success: function(data) {
-                            alert("Successfully pushed resources back");
-                        }
+                            console.log("Successfully pushed resources back");
+                            location.reload();
+                        },
+                        async:false
                     });
                 },
                 async : false
@@ -3773,16 +3814,23 @@ $(function () {
 
         },
         deleteRecord: function() {
-            $('.form .field-Tag select option[value=' + this.model.get("_id") + "]").remove();
-            $('#' + this.model.get("_id")).parent('tr').remove();
-            this.deleteCollectionNameFromResources(this.model.get("_id"));
-            //Call from here method deleteCollectionNameFromResources/////////////////////////////////////
-            this.model.set({
-                'show': false
-            })
-            this.model.save({
-                success: location.reload()
-            })
+            if (confirm('Are you sure you want to delete this Collection?')) {
+                $('.form .field-Tag select option[value=' + this.model.get("_id") + "]").remove();
+                $('#' + this.model.get("_id")).parent('tr').remove();
+                this.deleteCollectionNameFromResources(this.model.get("_id"));
+                //Call from here method deleteCollectionNameFromResources/////////////////////////////////////
+                this.model.set({
+                    'show': false
+                })
+                this.model.save({
+                    success: function (data) {
+                        this.deleteCollectionNameFromResources(this.model.get("_id"));
+                        // location.reload()
+                    },
+                    async: false
+
+                })
+            }
         },
         render: function() {
             var inviteForm = this
@@ -3844,6 +3892,7 @@ $(function () {
                     this.model.save(null, {
                         success: function(m) {
                             alert("Collection Saved Successfully")
+                            location.reload()
                             if (that.model.get('_id') == undefined) {
                                 if (that.model.get('NesttedUnder') == '--Select--') {
                                     if (that.model.get('IsMajor') == true) {
@@ -4502,6 +4551,7 @@ $(function () {
             //   this.$el.append('<div style="padding: 20px 20px 0px 0px; float: left;"> <button class="SyncMembersDb btn btn-primary" id="syncmembers">Sync Members Db With Nation</button>  </div>')
             //  ****************************************************************************************************************************************************/
         },
+
         syncDbs: function(e) {
             alert('this is sync db function in community manage')
         },
@@ -4525,6 +4575,7 @@ $(function () {
             configForm.render();
 
             this.$el.html(configForm.el);
+            configForm.updateDropDownValue();
         }
 
     })
@@ -5432,10 +5483,13 @@ $(function () {
                         var welcomeResourceId = welcomeResources.models[0].attributes.id;
                         // display "watch welcome video" button
                         var hrefWelcomeVid = "/apps/_design/bell/bell-resource-router/index.html#openres/" + welcomeResourceId;
-                        //                        var $buttonWelcome = $('<a id="welcomeButton" class="login-form-button btn btn-block btn-lg btn-success" href="hmmm" target="_blank" style="margin-left: -4px;margin-top: -21px; font-size:27px;">Welcome</button>');
-                        var $buttonWelcome = $('<a id="welcomeButton" class="login-form-button btn btn-block btn-lg btn-success" target="_blank" href="hmmm" style="margin-left: -4px;margin-top: -21px; font-size:27px;">Welcome</button>');
+                        // #99: margin-left:0px     var $buttonWelcome = $('<a id="welcomeButton" class="login-form-button btn btn-block btn-lg btn-success" href="hmmm" target="_blank" style="margin-left: -4px;margin-top: -21px; font-size:27px;">Welcome</button>');
+                        var $buttonWelcome = $('<a id="welcomeButton" class="login-form-button btn btn-block btn-lg btn-success" target="_blank" href="hmmm" style="background-color:#2ecc71; margin-left: 0px;margin-top: -33px; font-size:27px;">Welcome</button>'); //Issue#99
                         context.$el.append($buttonWelcome);
                         context.$el.find("#welcomeButton").attr("href", hrefWelcomeVid); // <a href="dummy.mp4" class="html5lightbox" data-width="880" data-height="640" title="OLE | Welcome Video">Welcome Video</a>
+                    }
+                    else {
+                        context.$el.addClass('withoutWelcomeVideo');
                     }
                 },
                 error: function() {
@@ -5449,8 +5503,9 @@ $(function () {
             })
             this.$el.append(this.form.render().el)
             // give the form a submit button
-            var $button = $('<a class="login-form-button btn btn-block btn-lg btn-success" style="margin-left: -4px;margin-top: -21px; font-size:27px;" id="formButton">Sign In</button>')
-            var $button2 = $('<div class="signup-div" ><a style="margin-left: -4px;margin-top: -21px; font-size:22px;" class="signup-form-button btn btn-block btn-lg btn-info" id="formButton2">Become A Member</button></div>')
+            // #99 margin-left:1px for "Sign In " and "Become a Member" buttons
+            var $button = $('<a class="login-form-button btn btn-block btn-lg btn-success" style="background-color:#2ecc71; margin-left: 1px;margin-top: -21px; font-size:27px;" id="formButton">Sign In</button>')
+            var $button2 = $('<div class="signup-div" ><a style="margin-left: 1px;margin-top: -21px; font-size:22px;" class="signup-form-button btn btn-block btn-lg btn-info" id="formButton2">Become A Member</button></div>')
             this.$el.append($button)
             this.$el.append($button2)
         },
@@ -7771,18 +7826,29 @@ $(function () {
             } else {
                 this.$el.append("<tr><td>Author</td><td>No Author Defined</td></tr>")
             }
+            /**********************************************************************/
+            //Issue No: 54 (Update buttons on the My Library page on Dashboard)
+            //Date: 18th Sept, 2015
+            /**********************************************************************/
             //if the model has the Attachments
-            if (vars._attachments) {
-                                /**********************************************************************/
-                                //Issue No: 54 (Update buttons on the My Library page on Dashboard)
-                                //Date: 18th Sept, 2015
-                                 /**********************************************************************/
-                this.$el.append("<tr><td>Attachment</td><td><a class='btn open'  target='_blank' style='background-color:#1ABC9C;position: absolute;display: inline-block; line-height: 25px;margin-top: 35px;margin-left:-620px;width: 65px;height:26px;font-size: large' href='/apps/_design/bell/bell-resource-router/index.html#open/" + vars._id + "'>View</a></td></tr>")
+           // if (vars._attachments) {
+
+          /*      this.$el.append("<tr><td>Attachment</td><td><a class='btn open'  target='_blank' style='background-color:#1ABC9C;position: absolute;display: inline-block; line-height: 25px;margin-top: 35px;margin-left:-620px;width: 65px;height:26px;font-size: large' href='/apps/_design/bell/bell-resource-router/index.html#open/" + vars._id + "'>View</a></td></tr>")
 
             } else {
                 this.$el.append("<tr><td>Attachment</td><td>No Attachment</td></tr>")
             }
-            this.$el.append('<tr><td colspan="2"><button class="btn btn-danger" id="DestroyShelfItem">Remove</button></td></tr>')
+            this.$el.append('<tr><td colspan="2"><button class="btn btn-danger" id="DestroyShelfItem">Remove</button></td></tr>') */
+            if (vars._attachments) {
+                this.$el.append("<tr><td>Attachment</td><td></td></tr>")
+                this.$el.append("<br><a class='btn open' style='background-color:#1ABC9C;  width: 65px;height:26px;font-size: large' href='/apps/_design/bell/bell-resource-router/index.html#open/" + vars._id + "/"+ vars.title +"'>View</a><button class='btn btn-danger' id='DestroyShelfItem'>Remove</button></td></tr>")
+
+            } else {
+                this.$el.append("<tr><td>Attachment</td><td>No Attachment</td></tr>")
+                this.$el.append('<br><a class="btn open" style="visibility: hidden">View</a><button class="btn btn-danger" id="DestroyShelfItem">Remove</button></td></tr>')
+            }
+
+
 
         },
 
