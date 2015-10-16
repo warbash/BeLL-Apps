@@ -92,11 +92,10 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-newer');
 
     // Default task(s).
-    grunt.registerTask('default', ['newer:concat:distCommViews', 'newer:concat:distCommModels', 'newer:concat:distCommCollections', 'newer:concat:distNationViews', 'newer:concat:distNationModels', 'newer:concat:distNationCollections',
-        'newer:uglify:buildCommViews', 'newer:uglify:buildCommModels', 'newer:uglify:buildCommCollections', 'newer:uglify:buildCommApp', 'newer:uglify:buildCommRouter', 'newer:uglify:buildCommIndexFile',
-        'newer:uglify:buildNationViews', 'newer:uglify:buildNationModels', 'newer:uglify:buildNationCollections', 'newer:uglify:buildNationApp', 'newer:uglify:buildNationRouter']);
+    grunt.registerTask('default', ['concat:distCommViews', 'concat:distCommModels', 'concat:distCommCollections', 'concat:distNationViews', 'concat:distNationModels', 'concat:distNationCollections',
+        'uglify:buildCommViews', 'uglify:buildCommModels', 'uglify:buildCommCollections', 'uglify:buildCommApp', 'uglify:buildCommRouter', 'uglify:buildCommIndexFile',
+        'uglify:buildNationViews', 'uglify:buildNationModels', 'uglify:buildNationCollections', 'uglify:buildNationApp', 'uglify:buildNationRouter']);
 
 };
