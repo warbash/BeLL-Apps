@@ -287,9 +287,15 @@ function createDefaultAdminMember() {
                             //var languages = nano.db.use('languages');
                             console.log("******************Going to insert document into languages database*******************************");
                             var langEngDocPath = 'init_docs/languages.txt';
+                            insertLanguagesDoc(langEngDocPath);
+                            langEngDocPath = 'init_docs/languages-Urdu.txt';
+                            insertLanguagesDoc(langEngDocPath);
+                            langEngDocPath = 'init_docs/languages-Arabic.txt';
+                            insertLanguagesDoc(langEngDocPath);
+                           /* var langEngDocPath = 'init_docs/languages.txt';
                             var langUrduDocPath = 'init_docs/languages-Urdu.txt';
                             insertLanguagesDoc(langEngDocPath);
-                            insertLanguagesDoc(langUrduDocPath);
+                            insertLanguagesDoc(langUrduDocPath);*/
                             //console.log("******************Going to insert document into languages database*******************************");
                             /*fs.readFile(langEngDocPath, function (err, data) {
                                 languages.insert(data, function (err, res) {
