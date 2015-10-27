@@ -68,6 +68,7 @@
 <script type="text/javascript" src="js/ui.multiselect.js"></script>
 <script src="vendor/jqBarGraph.js"></script>
 <script src="vendor/highcharts.js"></script>
+
 <!--<script type="text/javascript" src="vendor/html5lightbox/jquery.js"></script>-->
 
 <script src="vendor/html5lightbox/html5lightbox.js"></script>
@@ -717,14 +718,14 @@
 
     <td>
         <a role='button' class='btn btn-warning' href='#meetup/details/<%= _id %>/<%= title %>'>
-            View Meetup
+           <%= languageDict.attributes.View+' '+ languageDict.attributes.Meetups%>
         </a>
     </td>
 
     <td>
         <%if(creator || isAdmin){ %>
         <a role='button' class='btn btn-inverse' href='#meetup/manage/<%= _id %>'>
-            <i class="icon-wrench icon-white"></i> Manage
+            <i class="icon-wrench icon-white"></i>  <%= languageDict.attributes.Manage%>
         </a>
         <%}%>
     </td>
@@ -732,7 +733,7 @@
     <td>
         <%if(creator || isAdmin){%>
         <a class='destroy btn btn-danger' href='#meetup/delete/<%= _id %>'>
-            <i class='icon-remove icon-white'></i> Delete
+            <i class='icon-remove icon-white'></i>  <%= languageDict.attributes.Delete%>
         </a>
         <%}%>
     </td>
@@ -848,8 +849,8 @@
                 <label id="selectedResources"></label>
                 <!-- The Second form that will be submitted containing the file -->
                 <form method="post" id="fileAttachment">
-                    <label for="_attachments">Upload Resource(s)</label>
-                    <input type="file" name="_attachments" id="_attachments" style="line-height: 28px;" multiple="multiple" label=" :" />
+                    <label for="_attachments"><%= languageDict.attributes.Upload+' '+languageDict.attributes.Resources%></label>
+                    <input type="file"  name="_attachments" id="_attachments" style="line-height: 28px;" multiple="multiple" label=" :"  />
                     <input class="rev" type="hidden" name="_rev">
                     <label>
                         <%
@@ -864,9 +865,9 @@
         <tr>
             <td>
                 <div class="save btn btn-success" name="save">
-                    Save
+                   <%= languageDict.attributes.Save%>
                 </div>
-                <a class="btn btn-danger" id="cancel">Cancel</a>
+                <a class="btn btn-danger" id="cancel"> <%= languageDict.attributes.Cancel%></a>
             </td>
             <td class="status">
                 <!-- status goes here -->

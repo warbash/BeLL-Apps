@@ -321,7 +321,7 @@ $(function() {
             App.$el.children('.body').html('<h1 class="login-heading">'+languageDict.attributes.Member+' '+languageDict.attributes.Login+'</h1>');
             App.$el.children('.body').append(memberLoginForm.el);
             memberLoginForm.updateLabels(languageDict);
-            if(languageDict.attributes.nameOfLanguage=="اردو" || clanguage=="العربية")
+            if(clanguage=="اردو" || clanguage=="العربية")
             {
                 $('.field-login').find('label').addClass('labelsOnLogin');
                 $('.field-password').find('label').addClass('labelsOnLogin');
@@ -622,6 +622,31 @@ $(function() {
                     $(".form .field-Level select").find('option').removeAttr("selected")
                 }
             }
+            this.updateLabelsOfAddResourceForm();
+            if(App.configuration.attributes.currentLanguage=="اردو" || App.configuration.attributes.currentLanguage=="العربية")
+            {this.updateAllignmentOfAddResourceForm();}
+
+        },
+        updateAllignmentOfAddResourceForm: function(){
+            $('#resourceform').find('table').find('tbody').find('tr').find('td').find('h2').css('float','right');
+            $('.field-title').find('label').css('float','right');
+            $('.field-author').find('label').css('float','right');
+            $('.field-Publisher').find('label').css('float','right');
+            $('.field-language').find('label').css('float','right');
+            $('.field-Year').find('label').css('float','right');
+            $('.field-linkToLicense').find('label').css('float','right');
+            $('.field-subject').find('label').css('float','right');
+            $('.field-Level').find('label').css('float','right');
+            $('.field-Tag').find('label').css('float','right');
+            $('.field-Medium').find('label').css('float','right');
+            $('.field-openWith').find('label').css('float','right');
+            $('.field-resourceFor').find('label').css('float','right');
+            $('.field-resourceType').find('label').css('float','right');
+            $('.field-articleDate').find('label').css('float','right');
+            $('.field-addedBy').find('label').css('float','right');
+
+        },
+        updateLabelsOfAddResourceForm : function(){
             $('#resourceform').find('table').find('tbody').find('tr').find('td').find('h2').html(App.languageDict.attributes.New+' '+App.languageDict.attributes.Resources);
             $('.field-title').find('label').html(App.languageDict.attributes.Title);
             $('.field-author').find('label').html(App.languageDict.attributes.author);
@@ -636,7 +661,7 @@ $(function() {
                 noneSelectedText: App.languageDict.attributes.Select_An_option
 
             });
-           // $('.field-subject').find('.bbf-editor').find('select').html(App.languageDict.attributes.Select_An_option);
+            // $('.field-subject').find('.bbf-editor').find('select').html(App.languageDict.attributes.Select_An_option);
             $('.field-Level').find('label').html(App.languageDict.attributes.level);
             $('.field-Level').find('.bbf-editor').find('select').multiselect({
 
@@ -661,9 +686,9 @@ $(function() {
             for(var i=0;i<mediaArray.length;i++)
             {
 
-               /* $('.field-Medium').find('.bbf-editor').find('select').each(function() {
-                    $(this).find('option').html(mediaArray[i]);
-                });*/
+                /* $('.field-Medium').find('.bbf-editor').find('select').each(function() {
+                 $(this).find('option').html(mediaArray[i]);
+                 });*/
                 $('.field-Medium').find('.bbf-editor').find('select').find('option').eq(i).html(mediaArray[i]);
 
             }
@@ -688,11 +713,6 @@ $(function() {
                 $('.field-resourceType').find('.bbf-editor').find('select').find('option').eq(i).html(resourceTypeArray[i]);
 
             }
-            $('#fileAttachment').find('label').html(App.languageDict.attributes.Upload+' '+App.languageDict.attributes.Resources);
-            $('#_attachments').attr("label",App.languageDict.attributes.Browse);
-
-
-            //$('#resourceform').find('table').find('tbody').find('tr').eq(1).find('td').find('.fields').find
         },
 
         bellResourceSearch: function() {
@@ -1387,7 +1407,9 @@ $(function() {
         },
         ListMeetups: function() {
 
-            App.$el.children('.body').html('<h3>Meetups<a style="margin-left:20px" class="btn btn-success" href="#meetup/add">Add Meetup</a></h3>')
+            App.$el.children('.body').html('<h3 id="meetUpHeading">'+App.languageDict.attributes.Meetups+'<a id="linkOfMeetUpHeading" class="btn btn-success" href="#meetup/add">'+App.languageDict.attributes.Add+' '+App.languageDict.attributes.Meetups+'</a></h3>');
+
+
             var meetUps = new App.Collections.Meetups()
             meetUps.fetch({
                 async: false
@@ -1398,8 +1420,25 @@ $(function() {
 
             meetUpView.render()
             App.$el.children('.body').append(meetUpView.el);
-            $('.body').removeClass('addResource');
+            meetUpView.changeDirection();
+           if(App.configuration.attributes.currentLanguage=="اردو" || App.configuration.attributes.currentLanguage=="العربية")
+            {
+                this.changeAllignmentOfListMeetup();
+            }
+            else
+            {
+
+                $('#linkOfMeetUpHeading').css('margin-left','20px');
+            }
+            //$('.body').removeClass('addResource');
         },
+        changeAllignmentOfListMeetup:function(){
+            $('#meetUpHeading').css('margin-right','2%');
+            $('#meetUpHeading').addClass('addResource');
+            $('#linkOfMeetUpHeading').addClass('addMarginsOnResource');
+
+        },
+
         Meetup_Detail: function(meetupId, title) {
             var meetupModel = new App.Models.MeetUp({
                 _id: meetupId
@@ -1471,7 +1510,7 @@ $(function() {
                 }
 
             });
-
+            $('.body').removeClass('addResource');
         },
         deleteMeetUp: function(meetupId) {
             var UserMeetups = new App.Collections.UserMeetups()

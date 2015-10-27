@@ -23,12 +23,66 @@ $(function() {
 				if (this.collection.length > 0) {
 					this.render()
 				}
-			},
+			}
+
 
 		},
-		addAll: function() {
+        changeDirection : function (){
+            var configurations = Backbone.Collection.extend({
+                url: App.Server + '/configurations/_all_docs?include_docs=true'
+            })
+            var config = new configurations()
+            config.fetch({
+                async: false
+            })
+            var con = config.first();
+            var currentConfig = config.first().toJSON().rows[0].doc;
+            var clanguage= currentConfig.currentLanguage;
+            if(clanguage=="اردو"   || clanguage=="العربية")
+            {
+                var library_page = $.url().data.attr.fragment;
+                if(library_page=="meetups")
+                {
+                    //    alert("Hello")
+                    $('.body').addClass('addResource');
+                }
 
-			this.$el.html("<tr><th>Topic</th><th colspan='4'>Actions</th></tr>")
+                // $('.table-striped').css({direction:rtl});
+            }
+            else
+            {
+                $('.body').removeClass('addResource');
+            }
+        },
+		addAll: function() {
+            var configurations = Backbone.Collection.extend({
+                url: App.Server + '/configurations/_all_docs?include_docs=true'
+            })
+            var config = new configurations()
+            config.fetch({
+                async: false
+            })
+            var con = config.first();
+            var currentConfig = config.first().toJSON().rows[0].doc;
+            var clanguage= currentConfig.currentLanguage;
+            var languages = new App.Collections.Languages();
+            languages.fetch({
+                async: false
+            });
+            var languageDict;
+            for(var i=0;i<languages.length;i++)
+            {
+                if(languages.models[i].attributes.hasOwnProperty("nameOfLanguage"))
+                {
+                    if(languages.models[i].attributes.nameOfLanguage==clanguage)
+                    {
+                        languageDict=languages.models[i];
+                    }
+                }
+            }
+            App.languageDict = languageDict;
+
+			this.$el.html("<tr><th>"+languageDict.attributes.Title+"</th><th colspan='4'>"+languageDict.attributes.action+"</th></tr>")
 			var manager = new App.Models.Member({
 				_id: $.cookie('Member._id')
 			})
@@ -53,7 +107,7 @@ $(function() {
 
 						for (var i = 0; i < looplength; i++) {
 							if (i == 0)
-								pageBottom += '<a  class="pageNumber" value="' + i * 20 + '">Home</a>&nbsp&nbsp'
+								pageBottom += '<a  class="pageNumber" value="' + i * 20 + '">'+languageDict.attributes.Home+'</a>&nbsp&nbsp'
 							else
 								pageBottom += '<a  class="pageNumber" value="' + i * 20 + '">' + i + '</a>&nbsp&nbsp'
 						}
@@ -66,6 +120,19 @@ $(function() {
 		},
 
 		render: function() {
+            var clanguage
+                = App.configuration.get("currentLanguage");
+            if(clanguage=="اردو"  || clanguage=="العربية")
+            {
+                $('link[rel=stylesheet][href~="app/Home.css"]').attr('disabled', 'false');
+                $('link[rel=stylesheet][href~="app/Home-Urdu.css"]').removeAttr('disabled');
+            }
+            else
+            {
+                $('link[rel=stylesheet][href~="app/Home.css"]').removeAttr('disabled');
+                $('link[rel=stylesheet][href~="app/Home-Urdu.css"]').attr('disabled', 'false');
+
+            }
 			this.addAll()
 		}
 
