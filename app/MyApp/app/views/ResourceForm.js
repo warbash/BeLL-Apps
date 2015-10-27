@@ -162,6 +162,7 @@ $(function() {
 				vars.resourceAttachments = fields;
 				vars.resourceTitle = this.model.get('title');
 				vars.resourceUrl = this.model.get('url');
+                vars.languageDict=App.languageDict;
 
 
 			} else {
@@ -169,6 +170,7 @@ $(function() {
 				vars.header = 'New Resource';
 				vars.resourceAttachments = "No File Selected.";
 				vars.resourceUrl = "";
+                vars.languageDict=App.languageDict;
 			}
 
 			// prepare the form
@@ -193,7 +195,7 @@ $(function() {
 			this.$el.html(this.template(vars))
 			// @todo this is hackey, should be the following line or assigned to vars.form
 			$('.fields').html(this.form.el)
-			this.$el.append('<button class="btn btn-success" id="add_newCoellection" >Add New</button>')
+			this.$el.append('<button class="btn btn-success" id="add_newCoellection" >'+App.languageDict.attributes.Add+' '+App.languageDict.attributes.New+'</button>')
 			$('#progressImage').hide();
 			//$this.$el.children('.fields').html(this.form.el) // also not working
             $('[name="title"]').focus();
@@ -287,6 +289,7 @@ $(function() {
 			// Send the updated model to the server
 			var newTitle = this.model.get("title")
 			if (this.model.get("title").length == 0) {
+
 				alert("Resource Title is missing")
 			} else if (this.model.get("subject") == null) {
 				alert("Resource Subject is missing")
