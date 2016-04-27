@@ -1813,7 +1813,7 @@ $(function() {
                 // Set up the form
                 modelForm.render();
                 $('.bbf-form .field-courseLeader .bbf-editor select').find('option').eq(0).css('display','none');
-
+                $('.bbf-form .field-courseLeader .bbf-editor select').attr('multiple','multiple');
 
 
 
