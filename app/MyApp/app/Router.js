@@ -904,6 +904,8 @@ $(function() {
             {
                 $('.bbf-form .field-courseLeader').css('display','none');
             }
+            //Hide the Select an option tag from options on leader.
+            $('.bbf-form .field-courseLeader .bbf-editor select').find('option').eq(0).css('display','none');
             if(!modelId){
                 //Setting up the default selected customized text
 
@@ -1810,6 +1812,7 @@ $(function() {
                 $('#AddCourseMainDiv').append(modelForm.el);
                 // Set up the form
                 modelForm.render();
+                $('.bbf-form .field-courseLeader .bbf-editor select').find('option').eq(0).css('display','none');
 
 
 
