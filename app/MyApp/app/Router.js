@@ -835,7 +835,7 @@ $(function() {
                 nameOfLabel="Add_"+label;
                 $('#AddCourseMainDiv').append('<h3>'+languageDictValue.get(nameOfLabel)+'</h3>')
             }
-            $('#AddCourseMainDiv').append(modelForm.el)
+            $('#AddCourseMainDiv').append(modelForm.el);
             // Bind form events for when Group is ready
             model.once('Model:ready', function() {
                 // when the users submits the form, the group will be processed
@@ -899,6 +899,11 @@ $(function() {
             //Setting up the default error Message
             Backbone.Form.validators.errMessages.required=languageDictValue.attributes.Required_Text;
 
+            //#216: Course leader cannot be specified at the time of course creation.
+            if(!modelId)
+            {
+                $('.bbf-form .field-courseLeader').css('display','none');
+            }
             if(!modelId){
                 //Setting up the default selected customized text
 
