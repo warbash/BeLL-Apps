@@ -836,6 +836,7 @@ $(function() {
                 $('#AddCourseMainDiv').append('<h3>'+languageDictValue.get(nameOfLabel)+'</h3>')
             }
             $('#AddCourseMainDiv').append(modelForm.el);
+
             // Bind form events for when Group is ready
             model.once('Model:ready', function() {
                 // when the users submits the form, the group will be processed
@@ -846,6 +847,7 @@ $(function() {
                 })
                 // Set up the form
                 modelForm.render();
+                $('.form .field-courseLeader .bbf-editor select').attr('multiple','multiple');
 
                 $('.form .field-startDate input').datepicker({
                     todayHighlight: true
@@ -899,11 +901,7 @@ $(function() {
             //Setting up the default error Message
             Backbone.Form.validators.errMessages.required=languageDictValue.attributes.Required_Text;
 
-            //#216: Course leader cannot be specified at the time of course creation.
-            if(!modelId)
-            {
-                $('.bbf-form .field-courseLeader').css('display','none');
-            }
+            
             //Hide the Select an option tag from options on leader.
             $('.bbf-form .field-courseLeader .bbf-editor select').find('option').eq(0).css('display','none');
             if(!modelId){
@@ -1666,6 +1664,10 @@ $(function() {
 
                     $('#parentLibrary').append('<h3 id="headingOfCourses">'+App.languageDict.attributes.Courses+'</h3>')
                     $('#parentLibrary').append(groupsTable.el);
+                    if (member.get('roles').indexOf("Manager") == -1)
+                    {
+                        $('#addCourseButton').css('display','none');
+                    }
                     groupsTable.changeDirection();
                     if(directionOfLang.toLowerCase()==="right")
                     {
@@ -1812,11 +1814,8 @@ $(function() {
                 $('#AddCourseMainDiv').append(modelForm.el);
                 // Set up the form
                 modelForm.render();
-                $('.bbf-form .field-courseLeader .bbf-editor select').find('option').eq(0).css('display','none');
+
                 $('.bbf-form .field-courseLeader .bbf-editor select').attr('multiple','multiple');
-
-
-
                 $('.bbf-form').find('.field-CourseTitle').find('label').html(App.languageDict.attributes.Course_Title);
                 $('.bbf-form').find('.field-languageOfInstruction').find('label').html(App.languageDict.attributes.Language_Of_Instruction);
                 $('.bbf-form').find('.field-memberLimit').find('label').html(App.languageDict.attributes.Member_Limit);

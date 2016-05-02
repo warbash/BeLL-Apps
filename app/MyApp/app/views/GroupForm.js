@@ -243,9 +243,12 @@ $(function () {
 		var newEntery = 0
 
 		this.model.once('sync', function () {
-				Backbone.history.navigate('course/manage/' + that.model.get("id"), {
+				/*Backbone.history.navigate('course/manage/' + that.model.get("id"), {
 					trigger: true
-				})
+				})*/
+            Backbone.history.navigate('courses', {
+                trigger: true
+            })
 			})
 			// Put the form's input into the model in memory
 		var previousLeader = this.model.get('courseLeader')
