@@ -68,6 +68,12 @@ $(function () {
 
         render: function () {
             var vars = this.model.toJSON();
+            var member = new App.Models.Member()
+            member.id = this.model.get('courseLeader');
+            member.fetch({
+                async: false
+            })
+            vars.leaderName=member.get('firstName')+' '+member.get('lastName')
             vars.manage=App.languageDict.attributes.Manage;
             vars.viewCourse=App.languageDict.attributes.View+' '+App.languageDict.attributes.Course;
             vars.progress=App.languageDict.attributes.Progress;
