@@ -239,20 +239,21 @@ $(function () {
         },
 	setForm: function () {
         var that = this;
-	/*	this.model.once('sync', function () {
+		this.model.once('sync', function () {
 				/*Backbone.history.navigate('course/manage/' + that.model.get("id"), {
 					trigger: true
-				})
+				})*/
             Backbone.history.navigate('courses', {
                 trigger: true
             })
-			})*/
+			})
 			// Put the form's input into the model in memory
         this.form.commit()
 		this.model.set("name", this.model.get("CourseTitle"))
         var leadersList = this.model.get("courseLeader");
 			// Send the updated model to the server
 		if (this.model.get("_id") == undefined) {
+            alert('setting up current members login....')
 			this.model.set("members", [$.cookie('Member._id')])
 		}else {
 			this.model.set("members", this.prevmemlist)
@@ -260,14 +261,12 @@ $(function () {
 		if ($.trim(this.model.get('CourseTitle')).length == 0) {
 			alert(App.languageDict.attributes.CourseTitle_Missing)
 		}
-		//            else if (this.model.get("courseLeader") == 0000) {
-		//                alert("Select Course Leader")
-		//            } 
 		else if (this.model.get("description").length == 0) {
 			alert(App.languageDict.attributes.Course_Desc_Missing)
 		}
 		else {
-			var member = new App.Models.Member()
+			//Adds the role of "Leader" to member who has currently logged in.
+            var member = new App.Models.Member()
 			member.id = $.cookie('Member._id')
 			member.fetch({
 				async: false
@@ -278,18 +277,6 @@ $(function () {
 			}
 
             var isNewLeaderAlreadyCourseMember = false;
-			var leader = this.model.get('courseLeader')
-			var courseMembers = this.model.get('members')
-			//var index = courseMembers.indexOf(previousLeader)
-//			if (index != -1) {
-//                courseMembers.splice(index, 1); // membercourseprogress for previous leader not deleted. y?
-//            }
-			if (courseMembers.indexOf(leader) == -1) { // new leader is not a member of the course already
-				courseMembers.push(leader)
-			} else {
-                isNewLeaderAlreadyCourseMember = true;
-            }
-			this.model.set("members", courseMembers)
             var courseTitle = this.model.get('CourseTitle');
             this.model.set('CourseTitle', $.trim(courseTitle));
             for(var i = 0 ; i < leadersList.length; i++) {
@@ -300,8 +287,18 @@ $(function () {
                 }
                 if(leadersList[i] != '0000') {
                     model.attributes.courseLeader = [];
+                    var courseMembers = this.model.get('members');
                     model.set('courseLeader', leadersList[i]);
+                    if (courseMembers.indexOf(model.attributes.courseLeader) == -1) { // new leader is not a member of the course already
+                        courseMembers.push(model.attributes.courseLeader)
+                    } else {
+                        isNewLeaderAlreadyCourseMember = true;
+                    }
+                    model.set('members',courseMembers);
                     that.saveCourseModel(model, isNewLeaderAlreadyCourseMember);
+                    var extra=this.model.get('members');
+                    var index=extra.indexOf(model.get('courseLeader'));
+                    this.model.attributes.members.splice(index,1);
                 }
             }
 		}
