@@ -131,19 +131,13 @@ $(function() {
                                 continue;
                             }
 
-                            password_data = member.get('password_data');
-                            if (password_data){
-                                if (password_data.type == 'md5' && password_data.value ){
-                                    if( md5(credentials.get('password')) == password_data.value) {
-                                        console.log([md5(credentials.get('password')), password_data.value]);
-                                        go_ahead_with_login = 1
-                                    }
-                                }
-                                if (password_data.type == 'pbkdf21' && password_data.value ){
-                                    hash_str = pbk_hash(credentials.get('password'),'salt',10,20);
-                                    if( hash_str == password_data.value) {
+                            obj_credentials = member.get('credentials');
+                            if (obj_credentials){
+                                if (obj_credentials.type == 'pbkdf21' && obj_credentials.value ){
+                                    hash_str = hash_login(member.get('login'),credentials.get('password'));
+                                    if( hash_str == obj_credentials.value) {
                                         console.log('pbk_hashing');
-                                        go_ahead_with_login = 1
+                                        go_ahead_with_login = 1;
                                     }
                                 }
                             }
@@ -152,22 +146,8 @@ $(function() {
                             }
 
                             if (go_ahead_with_login == 1) {
-                                if (!member.get(password_data)) {
-                                    if (get_password_type() == 'md5'){
-                                        password_data = {
-                                            'type': 'md5',
-                                            'value': md5(member.get("password")),
-                                            'plaintext': member.get("password")
-                                        };
-                                    }
-                                    if (get_password_type() == 'pbkdf21'){
-                                        password_data = {
-                                            'type': 'pbkdf21',
-                                            'value': pbk_hash(member.get("password"),"salt",10,20),
-                                            'plaintext': member.get("password")
-                                        };
-                                    }
-                                    member.set('password_data', password_data)
+                                if (!member.get(credentials)) {
+                                    member.set("credentials", generate_credentials(member.get('login'), member.get('password')))
                                 }
 
                                 if(member.get('community') == bellCode){
