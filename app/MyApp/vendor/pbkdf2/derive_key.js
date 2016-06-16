@@ -57,3 +57,24 @@ function derive_key(password, salt, iterations, bytes)
         display_message("The derived " + (bytes*8) + "-bit key is: " + key)};
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
+
+
+function dashboard_update_passwords(){
+    var members = new App.Collections.Members();
+    members.fetch({complete:function(){
+        for (var i = 0; i < members.length; i++){
+            member = members.models[i];
+            if (member.get('password')){
+                credentials = generate_credentials(member.get('login'),member.get('password'));
+                member.set("credentials", credentials);
+                member.set("password", "");
+                member.save();
+                console.log("saved member ", member.get('login'),  i);
+            }
+            else{
+                console.log("already saved ", member.get('login'), i);
+            }
+        }
+    }
+    });
+}

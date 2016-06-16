@@ -4,12 +4,13 @@ import sys
 import md5
 
 
-server = pycouchdb.Server("http://localhost:5984/") #make dogi happy, include passwords...
+server = pycouchdb.Server("http://nation:oleoleole@old.qa.ole.org:5984/") #make dogi happy, include passwords...
 config = server.database('configurations')
 members = server.database('members')
 
 config = dict(list(config.all())[0]['doc'])
 print config
+
 for count,mm in enumerate(members.all()):
     doc = mm.get('doc')
     hash = {'login': doc.get('login','towntown'),
@@ -30,5 +31,4 @@ for count,mm in enumerate(members.all()):
 
         doc['credentials'] = credentials
         members.save(doc)
-        print "saved doc"
-
+        print doc['credentials']
