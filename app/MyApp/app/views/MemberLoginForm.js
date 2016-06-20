@@ -120,15 +120,11 @@ $(function() {
             members.fetch({
                 success: function() {
                     var i;
-                    console.log(members);
                     if (members.length > 0) {
                         // member=members.first();
                         for(i=0; i <members.length ; i++)
                         {
                             member = members.models[i];
-                            console.log(member);
-                            console.log("credentials:");
-                            console.log(credentials.get('login'));
                             var go_ahead_with_login = 0;
 
 
@@ -138,17 +134,9 @@ $(function() {
 
                             obj_credentials = member.get('credentials');
                             if (obj_credentials){
-                                alert('in obj_credentials');
-                                alert(obj_credentials.type);
-                                alert(obj_credentials.value);
                                 if (obj_credentials.type == 'pbkdf21' && obj_credentials.value ){
-                                    alert('heredeeeeeeeeeeeee');
                                     hash_str = hash_login(member.get('login'),credentials.get('password'));
-                                    alert(hash_str);
-                                    alert('asdklfjalsjdfkl;aj');
                                     if( hash_str == obj_credentials.value) {
-                                        console.log('pbk_hashing');
-                                        alert('go_ahead_with_login == 1');
                                         go_ahead_with_login = 1;
                                     }
                                 }
@@ -159,7 +147,6 @@ $(function() {
 
                             if (go_ahead_with_login == 1) {
                                 if (!member.get(credentials)) {
-                                    alert('setting member credentials and clearing password');
                                     member.set("credentials", generate_credentials(member.get('login'), member.get('password')));
                                     member.set("password","");
                                 }
@@ -188,12 +175,10 @@ $(function() {
                         }
                         if(i==members.length)
                         {
-                            alert('town');
                             alert(App.languageDict.attributes.Invalid_Credentials)
                         }
                     }
                     else {
-                        alert('here');
                         alert(App.languageDict.attributes.Invalid_Credentials)
                     }
                 }
