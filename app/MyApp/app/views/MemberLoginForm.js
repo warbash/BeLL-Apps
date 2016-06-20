@@ -146,7 +146,7 @@ $(function() {
                             }
 
                             if (go_ahead_with_login == 1) {
-                                if (!member.get(credentials)) {
+                                if (!member.get('credentials')) {
                                     member.set("credentials", generate_credentials(member.get('login'), member.get('password')));
                                     member.set("password","");
                                 }

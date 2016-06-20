@@ -5,7 +5,10 @@ import md5
 import time
 import json
 
-address = sys.argv[1]
+try:
+    address = sys.argv[1]
+except:
+    address = "http://localhost:5984"
 
 if __name__ == "__main__":
     server = pycouchdb.Server(address)
@@ -17,9 +20,9 @@ if __name__ == "__main__":
     time.sleep(3)
     for count,mm in enumerate(members.all()):
         doc = mm.get('doc')
-        hash = {'login': doc.get('login','towntown'),
-                'password': doc.get('password','towntown'),
-                'community': doc.get('community','towntown')}
+        hash = {'login': str(doc.get('login','towntown')),
+                'password': str(doc.get('password','towntown')),
+                'community': str(doc.get('community','towntown'))}
 
         if hash['community'] == config.get('code'):
 
@@ -27,7 +30,7 @@ if __name__ == "__main__":
             credentials = {}
             credentials['type'] = 'pbkdf21'
             credentials['salt'] = md5.md5(hash['login']).hexdigest()
-            credentials['value'] = pbkdf2_hex(md5.md5(hash['login']).hexdigest(), hash['password'], 10, keylen=20)
+            credentials['value'] = pbkdf2_hex(hash['password'], credentials['salt'], 10, keylen=20)
             credentials['login'] = hash['login']
 
             doc['credentials'] = credentials
