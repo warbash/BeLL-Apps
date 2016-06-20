@@ -5,36 +5,44 @@ import md5
 import time
 import json
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 try:
-    address = sys.argv[1]
+    host = sys.argv[1]
 except:
-    address = "http://localhost:5984"
+    host = "http://localhost:5984"
 
 if __name__ == "__main__":
-    server = pycouchdb.Server(address)
+    server = pycouchdb.Server(host)
     config = server.database('configurations')
     members = server.database('members')
 
     config = dict(list(config.all())[0]['doc'])
-    print config
-    time.sleep(3)
-    for count,mm in enumerate(members.all()):
-        doc = mm.get('doc')
-        hash = {'login': str(doc.get('login','towntown')),
-                'password': str(doc.get('password','towntown')),
-                'community': str(doc.get('community','towntown'))}
+    print json.dumps(config,indent=2)
+
+    for count, member in enumerate(members.all()):
+
+        doc = member.get('doc')
+
+        if 'login' not in doc:
+            continue
+        if 'credentials' in doc:
+            continue
+
+        print '|'.join([str(count), doc.get('login'), doc.get('password')])
+        hash = {'login': doc.get('login','towntown'),
+                'password': doc.get('password','towntown'),
+                'community': doc.get('community','towntown')}
 
         if hash['community'] == config.get('code'):
 
-            print hash
             credentials = {}
             credentials['type'] = 'pbkdf21'
-            credentials['salt'] = md5.md5(hash['login']).hexdigest()
-            credentials['value'] = pbkdf2_hex(hash['password'], credentials['salt'], 10, keylen=20)
+            credentials['salt'] = md5.md5(str(hash['login'])).hexdigest()
+            credentials['value'] = pbkdf2_hex(str(hash['password']), credentials['salt'], 10, keylen=20)
             credentials['login'] = hash['login']
 
             doc['credentials'] = credentials
             doc['password'] = ''
             members.save(doc)
-            print "saved"
-            print json.dumps(doc, indent=2)
