@@ -9,7 +9,7 @@ function get_password_type(){
 }
 
 function hash_login(login, password){
-    salt = md5(password)
+    salt = md5(login)
     return pbk_hash(password,salt,10,20)
 }
 
