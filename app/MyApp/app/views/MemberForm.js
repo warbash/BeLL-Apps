@@ -316,6 +316,11 @@ $(function() {
                     that.model.set("forGrades", null);
                     this.model.set("lastEditDate",new Date());
                 }
+
+                credentials = generate_credentials(this.model.get("login"), this.model.get("password")); 
+                this.model.set("credentials", credentials);
+                this.model.set("password", "");
+
                 this.removeSpaces();
                 var addMem = true
                 if (this.model.get("_id") == undefined) {
@@ -323,8 +328,8 @@ $(function() {
                     this.model.set("visits", 0);
 
                     credentials = generate_credentials(this.model.get("login"), this.model.get("password")); 
-
                     this.model.set("credentials", credentials);
+                    this.model.set("password", "");
 
                     if($.cookie('languageFromCookie')===null)
                     {

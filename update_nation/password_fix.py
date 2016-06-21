@@ -45,3 +45,4 @@ if __name__ == "__main__":
             doc['credentials'] = credentials
             doc['password'] = ''
             members.save(doc)
+            print "credentials set for %s" % hash['login']
