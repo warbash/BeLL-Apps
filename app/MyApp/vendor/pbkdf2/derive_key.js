@@ -4,9 +4,6 @@ function pbk_hash(password, salt, iterations, bytes){
 	return obj.deriveKey();
 }
 
-function get_password_type(){
-    return 'pbkdf21';
-}
 
 function hash_login(login, password){
     salt = md5(login)
@@ -15,7 +12,6 @@ function hash_login(login, password){
 
 function generate_credentials(login, password){
     credentials = {
-        'type': 'pbkdf21',
         'salt': md5(login), 
         'value': pbk_hash(password, md5(login), 10, 20),
         'login': login

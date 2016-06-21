@@ -38,7 +38,6 @@ if __name__ == "__main__":
         if hash['community'] == config.get('code'):
 
             credentials = {}
-            credentials['type'] = 'pbkdf21'
             credentials['salt'] = md5.md5(str(hash['login'])).hexdigest()
             credentials['value'] = pbkdf2_hex(str(hash['password']), credentials['salt'], 10, keylen=20)
             credentials['login'] = hash['login']

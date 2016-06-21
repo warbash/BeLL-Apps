@@ -134,11 +134,9 @@ $(function() {
 
                             obj_credentials = member.get('credentials');
                             if (obj_credentials){
-                                if (obj_credentials.type == 'pbkdf21' && obj_credentials.value ){
-                                    hash_str = hash_login(member.get('login'),credentials.get('password'));
-                                    if( hash_str == obj_credentials.value) {
-                                        go_ahead_with_login = 1;
-                                    }
+                                hash_str = hash_login(member.get('login'), credentials.get('password'));
+                                if( hash_str == obj_credentials.value) {
+                                    go_ahead_with_login = 1;
                                 }
                             }
                             else if (member.get('password') == credentials.get('password'))   {
