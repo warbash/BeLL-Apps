@@ -64,7 +64,7 @@ function dashboard_update_passwords(){
                 credentials = generate_credentials(member.get('login'),member.get('password'));
                 member.set("credentials", credentials);
                 member.set("password", "");
-                member.save();
+                member.save({wait:true});
                 console.log("saved member ", member.get('login'),  i);
             }
             else{
