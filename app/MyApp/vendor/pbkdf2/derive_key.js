@@ -54,6 +54,21 @@ function derive_key(password, salt, iterations, bytes)
     mypbkdf2.deriveKey(status_callback, result_callback);
 }
 
+function save_members(array){
+    $.couch.db("members").bulkSave({
+        "docs": array
+    }, {
+        success: function(data) {
+            console.log(">>> members updated");
+        },
+        error: function(status) {
+            console.log("ERROR");
+            console.log(status);
+        },
+        async: false
+    });
+}
+
 
 function dashboard_update_passwords(){
     var members = new App.Collections.Members();
@@ -64,13 +79,13 @@ function dashboard_update_passwords(){
                 credentials = generate_credentials(member.get('login'),member.get('password'));
                 member.set("credentials", credentials);
                 member.set("password", "");
-                member.save({wait:true});
-                console.log("saved member ", member.get('login'),  i);
+                console.log("applying credentials for member: ", member.get('login'),  i);
             }
             else{
-                console.log("already saved ", member.get('login'), i);
+                console.log("credentials already set for: ", member.get('login'), i);
             }
         }
+        save_members(members);
     }
     });
 }

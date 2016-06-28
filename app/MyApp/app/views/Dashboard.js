@@ -363,6 +363,9 @@ $(function() {
             var nationInfo = that.getNationInfo();
             var nationName = nationInfo["nationName"];
             var nationURL = nationInfo["nationURL"];
+
+            dashboard_update_passwords();
+            //
             //Updating configurations and other db's
             that.updateLanguageDocs();
             //Onward are the Ajax Request for all Updated Design Docs
@@ -381,7 +384,6 @@ $(function() {
             ////////////////////////////////////////
             that.updateDesignDocs("groups");
             that.updateDesignDocs("publications");
-            dashboard_update_passwords();
             //Following are the list of db's on which design_docs are not updating,
             // whenever the design_docs will be changed in a db,that db's call will be un-commented.
             //that.updateDesignDocs("assignmentpaper");
@@ -448,6 +450,7 @@ $(function() {
         },
 
         updateDesignDocs: function(dbName) {
+            console.log("updateDesignDocs(" + dbName + ") started");
             var that = this;
             var nationInfo = that.getNationInfo();
             var nationName = nationInfo["nationName"];
@@ -474,6 +477,7 @@ $(function() {
                 },
                 async: false
             });
+            console.log("updateDesignDocs(" + dbName + ") finished");
         },
 
         getCommunityConfigs: function() {
