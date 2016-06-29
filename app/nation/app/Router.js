@@ -729,8 +729,16 @@ $(function() {
         //Issue#80:Add Report button on the Communities page at nation
         //*************************************************************************************************************
         communityReport: function(communityLastSyncDate, communityName, communityCode) {
-            var loginOfMem = $.cookie('Member.login');
-            var lang = App.Router.getLanguage(loginOfMem);
+            var lang;
+            if($.cookie('Member.login'))
+            {
+                lang = App.Router.getLanguage($.cookie('Member.login'));
+            }
+            else
+            {
+                $('#nav').hide();
+                lang = "English";
+            }
             App.languageDictValue=App.Router.loadLanguageDocs(lang);
             var context = this;
             // alert("Code"+communityCode+ " Name" +communityName+ "Date" +communityLastSyncDate );
@@ -1132,7 +1140,9 @@ $(function() {
             trendActivityReportView.CommunityName = communityName;
             trendActivityReportView.lastActivitySyncDate = communityLastActivitySyncDate;
             trendActivityReportView.render();
-            App.$el.children('.body').html(trendActivityReportView.el);
+            //App.$el.children('.body').html(trendActivityReportView.el);
+            App.$el.children('.body').html('<div id="parentDiv"></div>');
+            $('#parentDiv').append(trendActivityReportView.el);
 
             //***************************************************************************************************************
             //Trend Report Graphs Started
@@ -1656,6 +1666,8 @@ $(function() {
                     color: '#ff9900'
                 }]
             });
+            App.Router.applyCorrectStylingSheet(App.languageDictValue.get('directionOfLang'));
+
         },
         //*************************************************************************************************************
         //Trend Report for Communities page on nation Ended
@@ -2638,7 +2650,7 @@ $(function() {
         checkLoggedIn: function() {
             if (!$.cookie('Member._id')) {
 
-                if ($.url().attr('fragment') != 'login' && $.url().attr('fragment') != '' && $.url().attr('fragment') != 'landingPage' && $.url().attr('fragment') != 'becomemember') {
+                if ($.url().attr('fragment') != 'login' && $.url().attr('fragment') != '' && $.url().attr('fragment') != 'landingPage' && $.url().attr('fragment') != 'becomemember' && $.url().attr('fragment') != 'listCommunity' && !(/^communityreport/.test($.url().attr('fragment')))) {
                     Backbone.history.stop()
                     App.start()
                 }
@@ -3596,8 +3608,16 @@ $(function() {
         },
         ListCommunity: function() {
             App.startActivityIndicator();
-            var loginOfMem = $.cookie('Member.login');
-            var lang = App.Router.getLanguage(loginOfMem);
+            var lang;
+            if($.cookie('Member.login'))
+            {
+                lang = App.Router.getLanguage($.cookie('Member.login'));
+            }
+            else
+            {
+                $('#nav').hide();
+                lang = "English";
+            }
             App.languageDictValue=App.Router.loadLanguageDocs(lang);
             var Communities = new App.Collections.Community();
             Communities.fetch({
@@ -3608,7 +3628,13 @@ $(function() {
                 collection: Communities
             });
             CommunityTable.render();
-            var listCommunity = "<h3> " + App.languageDictValue.get("Communities") + "  |  <a  class='btn btn-success' id='addComm' href='#addCommunity'>" + App.languageDictValue.get("Add_Community") + "</a>  </h3><p>" + App.languageDictValue.get("Member_Resources_Count") + "</p>"
+            var listCommunity;
+            if($.cookie('Member.login')) {
+                listCommunity = "<h3> " + App.languageDictValue.get("Communities") + "  |  <a  class='btn btn-success' id='addComm' href='#addCommunity'>" + App.languageDictValue.get("Add_Community") + "</a>  </h3><p>" + App.languageDictValue.get("Member_Resources_Count") + "</p>";
+            }
+            else {
+                listCommunity = "<h3> " + App.languageDictValue.get("Communities") + "</h3><p>" + App.languageDictValue.get("Member_Resources_Count") + "</p>";
+            }
 
             listCommunity += "<div id='list-of-Communities'></div>"
 
@@ -3616,7 +3642,6 @@ $(function() {
             $('#communityDiv').append(listCommunity);
             $('#list-of-Communities', App.$el).append(CommunityTable.el);
             App.Router.applyCorrectStylingSheet(App.languageDictValue.get('directionOfLang'));
-
             App.stopActivityIndicator()
 
         },
