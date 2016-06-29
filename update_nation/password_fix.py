@@ -6,7 +6,7 @@ import time
 import json
 
 reload(sys)
-sys.setdefaultencoding('utf-8')
+sys.setdefaultencoding("utf-8")
 
 try:
     host = sys.argv[1]
@@ -15,34 +15,34 @@ except:
 
 if __name__ == "__main__":
     server = pycouchdb.Server(host)
-    config = server.database('configurations')
-    members = server.database('members')
+    config = server.database("configurations")
+    members = server.database("members")
 
-    config = dict(list(config.all())[0]['doc'])
+    config = dict(list(config.all())[0]["doc"])
     print json.dumps(config,indent=2)
 
     for count, member in enumerate(members.all()):
 
-        doc = member.get('doc')
+        doc = member.get("doc")
 
-        if 'login' not in doc:
+        if "login" not in doc:
             continue
-        if 'credentials' in doc:
+        if "credentials" in doc:
             continue
 
-        print '|'.join([str(count), doc.get('login'), doc.get('password')])
-        hash = {'login': doc.get('login','towntown'),
-                'password': doc.get('password','towntown'),
-                'community': doc.get('community','towntown')}
+        print "|".join([str(count), doc.get("login"), doc.get("password")])
+        hash = {"login": doc.get("login","nil"),
+                "password": doc.get("password","nil"),
+                "community": doc.get("community","nil")}
 
-        if hash['community'] == config.get('code'):
+        if hash["community"] == config.get("code"):
 
             credentials = {}
-            credentials['salt'] = md5.md5(str(hash['login'])).hexdigest()
-            credentials['value'] = pbkdf2_hex(str(hash['password']), credentials['salt'], 10, keylen=20)
-            credentials['login'] = hash['login']
+            credentials["salt"] = md5.md5(str(hash["login"])).hexdigest()
+            credentials["value"] = pbkdf2_hex(str(hash["password"]), credentials["salt"], 10, keylen=20)
+            credentials["login"] = hash["login"]
 
-            doc['credentials'] = credentials
-            doc['password'] = ''
+            doc["credentials"] = credentials
+            doc["password"] = ""
             members.save(doc)
-            print "credentials set for %s" % hash['login']
+            print "credentials set for %s" % hash["login"]
