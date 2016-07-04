@@ -56,7 +56,8 @@ $(function() {
             'mail': 'email',
 
             'newsfeed': 'NewsFeed',
-            'badges/:role': 'Badges',
+            'badges': 'Badges',
+            'credits':'Credits',
 
             'courses/barchart': 'CoursesBarChart',
             'calendar': 'CalendarFunction',
@@ -294,18 +295,62 @@ $(function() {
             // alert('match with ereader')
             this.underConstruction()
         },
-        Badges: function(role) {
-            if(role=='Learner') {
-                var creditsView = new App.Views.CourseCreditsMainPage();
-                creditsView.render();
-                App.$el.children('.body').html('<div id="creditsMainTable"></div>');
-                $('#creditsMainTable').append('<h3>' + 'Course Credits' + '</h3>');
-                $('#creditsMainTable').append(creditsView.el);
-            }
-            else{
-                this.underConstruction()
+        Badges: function() {
+            //Check if the user who has logged in is a Leader or a Learner in any course.
+            var groups = new App.Collections.Groups()
+            groups.fetch({
+                success: function (groupDocs) {
+                    if(groupDocs.length>0){
+                        var isLearner=false;
+                        for(var i=0;i<groupDocs.length;i++) {
+                            var doc=groupDocs.models[i];
+                            if(doc.get('members')!=undefined && doc.get('courseLeader')!=undefined && doc.get('members').indexOf($.cookie('Member._id'))>-1 && doc.get('courseLeader').indexOf($.cookie('Member._id'))==-1){
+                                isLearner=true;
+                                alert('Learner for course '+doc.get('CourseTitle'));
+                            }
 
-            }
+                        }
+                        if(isLearner) {
+                            var creditsView = new App.Views.CourseCreditsMainPage();
+                            creditsView.render();
+                            App.$el.children('.body').html('<div id="creditsMainTable"></div>');
+                            $('#creditsMainTable').append('<h3>' + 'Course Credits' + '</h3>');
+                            $('#creditsMainTable').append(creditsView.el);
+                        }
+                        else{
+                            alert('You are not enrolled as Learner in any course.');
+                            }
+                    }
+                }
+            });
+
+        },
+        Credits: function() {
+            //Check if the user who has logged in is a Leader or a Learner in any course.
+            var that=this;
+            var groups = new App.Collections.Groups()
+            groups.fetch({
+                success: function (groupDocs) {
+                    if(groupDocs.length>0){
+                        var isLeader=false;
+                        for(var i=0;i<groupDocs.length;i++) {
+                            var doc=groupDocs.models[i];
+                            if(doc.get('courseLeader')!=undefined && doc.get('courseLeader').indexOf($.cookie('Member._id'))>-1){
+                                isLeader=true;
+                                alert('Leader for course '+doc.get('CourseTitle'));
+                            }
+
+                        }
+                        if(isLeader){
+                            that.underConstruction();
+                        }
+                        else{
+                           alert('You are not enrolled as Leader in any course.');
+                        }
+                    }
+                }
+            });
+
         },
         creditDetails: function(){
             this.underConstruction()
